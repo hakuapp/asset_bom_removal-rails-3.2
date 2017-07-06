@@ -22,13 +22,11 @@ Or install it yourself as:
 
 ## Usage
 
-The gem hooks itself into the rails `assets:precompile` rake task so you do not need to do anything to use it.  It will run immediately after assets have been precompiled and will fix any CSS files it finds in the precompiled asset root.
+The gem hooks itself into rails assets pipeline so when you run `assets:precompile` it will be used.  When a css file is compiled with this gem in the app any BOM added by sass will be removed before the compiled CSS is passed to the rest of the asset pipeline to be persisted and added to the manifest.
 
 It should only affect production environments because sass is (by default) only configured to use `:compressed` style (and thus generate BOMs) in production mode.  In development it uses `:expanded` which does not trigger the BOM insertion.
 
-If you want to run the task yourself run:
-
-    $ bundle exec rake assets:bom-removal
+It replaces the default `css_compressor` (as configured in rails via `config.assets.css_compressor`) with a version that strips the BOM.  It won't do it if the `css_compressor` is configured and is not `:sass` or `:scss`.
 
 ## Development
 
