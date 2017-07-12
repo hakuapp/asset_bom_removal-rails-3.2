@@ -9,7 +9,7 @@ We do this because we want to use [SRI](https://developer.mozilla.org/en-US/docs
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'asset-bom-removal-rails'
+gem 'asset_bom_removal-rails'
 ```
 
 And then execute:
@@ -34,7 +34,7 @@ After checking out the repo, run `bundle install` to install dependencies. Then,
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/alphagov/asset-bom-removal-rails.
+Bug reports and pull requests are welcome on GitHub at https://github.com/alphagov/asset_bom_removal-rails.
 
 ## License
 
