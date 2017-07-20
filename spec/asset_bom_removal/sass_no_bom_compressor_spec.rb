@@ -19,6 +19,15 @@ RSpec.describe AssetBomRemoval::SassNoBomCompressor do
         no_bom_version = subject.call(input)
         expect(no_bom_version.bytes.take(3)).not_to eq(bom_bytes)
       end
+
+      it 'leaves the CSS otherwise untouched' do
+        default_version = sass_compressor.call(input)
+        # confirm our expectations that the sass compressor will generate a BOM
+        expect(default_version.bytes.take(3)).to eq(bom_bytes)
+
+        no_bom_version = subject.call(input)
+        expect(no_bom_version.bytes).to eq(default_version.bytes[3..-1])
+      end
     end
 
     context 'when supplied with css that does not generate a BOM' do

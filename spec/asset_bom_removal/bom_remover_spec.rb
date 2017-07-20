@@ -12,6 +12,14 @@ RSpec.describe AssetBomRemoval::BomRemover do
     it 'removes the BOM from the string' do
       expect(stripped_string.bytes[0..3]).not_to eq bom.bytes
     end
+
+    it 'otherwise leaves the string alone' do
+      expect(stripped_string.bytes).to eq example_string_without_bom.bytes
+    end
+
+    it 'returns the string encoded as utf-8' do
+      expect(stripped_string.encoding).to eq Encoding::UTF_8
+    end
   end
 
   context 'for a utf-8 string with the bom and ascii characters' do
