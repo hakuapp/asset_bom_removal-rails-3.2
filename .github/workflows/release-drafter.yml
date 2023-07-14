@@ -1,0 +1,25 @@
+name: Release Drafter
+
+on:
+  # Manually publish
+  workflow_dispatch:
+  # Alternatively, create/ update a draft whenever a new PR gets pushed/merged
+  push:
+    branches:
+      - master
+
+jobs:
+  update_release_draft:
+    runs-on: ubuntu-20.04
+    steps:
+      # Drafts your next Release notes as Pull Requests are merged into "master"
+      - uses: release-drafter/release-drafter@v5
+        id: draft-release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: print_out_tag
+        env:
+          TAG: ${{ steps.draft-release.outputs.tag_name }}
+        run: |
+          echo "TAG: $TAG"
