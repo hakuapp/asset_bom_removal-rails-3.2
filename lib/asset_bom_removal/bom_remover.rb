@@ -9,22 +9,22 @@ module AssetBomRemoval
     end
 
     def remove_bom
-      if string_starts_with_utf8_bom?
+      if string_contains_utf8_bom?
         string.dup.force_encoding('UTF-8').tap do |utf8_string|
-          utf8_string.slice!(0)
+          utf8_string.delete! "\xEF\xBB\xBF"
         end
       else
         string
       end
     end
 
-  private
+    private
 
     attr_reader :string
 
-    def string_starts_with_utf8_bom?
+    def string_contains_utf8_bom?
       with_encoding('UTF-8') do |utf8_string|
-        utf8_string[0] == "\xEF\xBB\xBF"
+        utf8_string.to_s.include? "\xEF\xBB\xBF"
       end
     end
 

@@ -1,11 +1,11 @@
-require 'sprockets/sass_compressor'
+require 'sass/rails/compressor'
 require 'asset_bom_removal/bom_remover'
 
 module AssetBomRemoval
-  class SassNoBomCompressor < Sprockets::SassCompressor
+  class SassNoBomCompressor < Sass::Rails::CssCompressor
     # Let the default sass processor do all the hard work
-    def call(input)
-      BomRemover.remove_bom(super(input))
+    def compress(css)
+      BomRemover.remove_bom(super(css))
     end
   end
 end

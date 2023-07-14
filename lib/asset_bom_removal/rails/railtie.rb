@@ -4,7 +4,7 @@ module AssetBomRemoval
   module Rails
     class Railtie < ::Rails::Railtie
       def sass_might_output_bom?(app)
-        ::Rails.env.production? || app.config.sass.style == :compressed
+        ::Rails.env.production? || app.config.assets.compress
       end
 
       def app_uses_sass_for_css_compression?(app)
@@ -19,7 +19,7 @@ module AssetBomRemoval
           # We only need to do this if sass will be using :compressed style
           # because other styles don't output a BOM
           if app_uses_sass_for_css_compression?(app)
-            app.config.assets.css_compressor = AssetBomRemoval::SassNoBomCompressor
+            app.config.assets.css_compressor = AssetBomRemoval::SassNoBomCompressor.new
           end
         end
       end
