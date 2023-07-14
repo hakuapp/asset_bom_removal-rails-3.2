@@ -1,0 +1,52 @@
+name: Ruby Gem
+
+on:
+  # Manually publish
+  workflow_dispatch:
+    inputs:
+      GEM_VERSION:
+        description: 'Gem version to build'
+        required: true
+        type: string
+  # Alternatively, publish whenever a new release gets published.
+  release:
+    types: [published]
+
+jobs:
+  build:
+    name: Build + Publish
+    runs-on: ubuntu-20.04
+    permissions:
+      packages: write
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Ruby 2.1.9
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 2.1.9
+
+      - name: Fetch Latest Release
+        id: release-tag
+        uses: gregziegan/fetch-latest-release@v2.0.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publish to GPR
+        env:
+          GEM_HOST_API_KEY: "Bearer ${{ secrets.GITHUB_TOKEN }}"
+          OWNER: ${{ github.repository_owner }}
+          TAX_GEM_VERSION: ${{ github.event.inputs.GEM_VERSION || steps.release-tag.outputs.tag_name }}
+        run: |
+          mkdir -p $HOME/.gem
+          touch $HOME/.gem/credentials
+          chmod 0600 $HOME/.gem/credentials
+          printf -- "---\n:rubygems_api_key: ${GEM_HOST_API_KEY}\n" > $HOME/.gem/credentials
+          echo "TAX_GEM_VERSION: ${TAX_GEM_VERSION}"
+          if [[ ${TAX_GEM_VERSION::1} == "v" ]]; then
+            export TAX_GEM_VERSION=${TAX_GEM_VERSION:1}
+          fi
+          echo "TAX_GEM_VERSION: ${TAX_GEM_VERSION}"
+          gem build haku_tax.gemspec
+          gem push --KEY rubygems --host https://rubygems.pkg.github.com/${OWNER} *.gem
